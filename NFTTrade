@@ -1,0 +1,49 @@
+pragma solidity ^0.5.0;
+
+contract NftTrade{
+    uint nftsupply=1000;
+    uint public nftprize=10 wei;
+    address sell;
+    address bay;
+
+     event Transfer(address indexed from, address indexed to, uint256 value);
+
+
+    mapping (address => uint) balance;
+     mapping(address => mapping (address => uint256)) allowed;
+
+    constructor () public{
+        balance[msg.sender] = nftsupply;
+    }
+
+    function cheksupply() public view returns(uint){
+        return nftsupply;
+    }
+
+    function  mintnft(uint qty) public  returns(uint){
+    balance[msg.sender] += qty;
+    nftsupply += qty;
+    return nftsupply;
+
+    }
+
+     function baynft(uint nftvalue,address bayer,uint amt) public returns(bool){
+        require(balance[msg.sender] >= nftvalue);
+        require(balance[msg.sender] > 0.5 ether);
+        balance[msg.sender] -= nftvalue;
+        balance[bayer] +=nftvalue;
+        emit Transfer(msg.sender, bayer , nftvalue);
+        return true;
+    }
+
+        function sellnft(uint nftvalue , address seller,uint amt) public returns(bool){
+        require(balance[msg.sender] >= nftvalue);
+        require(balance[seller] > 25 wei);
+        require(balance[seller] > nftsupply);
+        balance[msg.sender] -= nftvalue;
+        balance[seller] += nftvalue;
+        emit Transfer(msg.sender,seller , nftvalue);
+        return true;
+    }
+
+}
